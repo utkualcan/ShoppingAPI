@@ -24,25 +24,21 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Sepet ile ilişki (Many-to-One)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
     @NotNull(message = "Sepet bilgisi boş olamaz")
     private Cart cart;
 
-    // Ürün ile ilişki (Many-to-One)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     @NotNull(message = "Ürün bilgisi boş olamaz")
     private Product product;
 
-    // Miktar
     @Column(nullable = false)
     @NotNull(message = "Miktar boş olamaz")
     @Min(value = 1, message = "Miktar en az 1 olmalıdır")
     private Integer quantity;
 
-    // Ürünün sepete eklendiği andaki fiyatı (fiyat değişikliklerinden etkilenmemek için)
     @Column(nullable = false, precision = 10, scale = 2)
     @NotNull(message = "Fiyat boş olamaz")
     private BigDecimal unitPrice;
@@ -55,7 +51,6 @@ public class CartItem {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // İş mantığı metodları
     public BigDecimal getTotalPrice() {
         return unitPrice.multiply(new BigDecimal(quantity));
     }
@@ -84,7 +79,6 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    // Equals ve hashCode ürün ve sepet bazında
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
