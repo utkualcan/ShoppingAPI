@@ -126,6 +126,5 @@ public class User {
 
 enum Role {
     USER,
-    ADMIN,
-    MODERATOR
+    ADMIN
 }
