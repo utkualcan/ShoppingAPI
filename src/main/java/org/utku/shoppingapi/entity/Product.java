@@ -55,7 +55,6 @@ public class Product {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // İş mantığı metodları
     public boolean isInStock() {
         return stockQuantity > 0;
     }

@@ -23,16 +23,13 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Eğer kullanıcı sistemi varsa, kullanıcıyla ilişkilendirme (One-to-One)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    // Eğer kullanıcı sistemi yoksa, session ID ile takip etmek için
     @Column(length = 100)
     private String sessionId;
 
-    // Sepet öğeleri (One-to-Many)
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
 
@@ -44,7 +41,6 @@ public class Cart {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // İş mantığı metodları
     public BigDecimal getTotalPrice() {
         return items.stream()
                 .map(CartItem::getTotalPrice)

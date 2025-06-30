@@ -21,13 +21,11 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Kullanıcı ile ilişki (Many-to-One)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull(message = "Kullanıcı bilgisi boş olamaz")
     private User user;
 
-    // Ürün ile ilişki (Many-to-One)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     @NotNull(message = "Ürün bilgisi boş olamaz")
@@ -37,7 +35,6 @@ public class Favorite {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    // Equals ve hashCode kullanıcı ve ürün bazında
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
