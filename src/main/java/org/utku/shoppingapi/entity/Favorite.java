@@ -9,6 +9,15 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a user's favorite product.
+ * This class manages the many-to-many relationship between users and their favorite products.
+ * 
+ * Features include:
+ * - Unique constraint to prevent duplicate favorites
+ * - Timestamp tracking when the favorite was added
+ * - Proper equals/hashCode implementation for entity comparison
+ */
 @Entity
 @Table(name = "favorites",
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "product_id"}))
@@ -17,24 +26,47 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Favorite {
 
+    /**
+     * Unique identifier for the favorite record.
+     * Auto-generated using database identity column.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The user who favorited the product.
+     * Many-to-one relationship, lazily loaded.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @NotNull(message = "Kullanıcı bilgisi boş olamaz")
+    @NotNull(message = "User cannot be null")
     private User user;
 
+    /**
+     * The product that was favorited.
+     * Many-to-one relationship, lazily loaded.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    @NotNull(message = "Ürün bilgisi boş olamaz")
+    @NotNull(message = "Product cannot be null")
     private Product product;
 
+    /**
+     * Timestamp when the favorite was created.
+     * Automatically set on entity creation and never updated.
+     */
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * Compares this favorite with another object for equality.
+     * Two favorites are equal if they have the same user and product.
+     * 
+     * @param o The object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,11 +77,23 @@ public class Favorite {
                 product.equals(favorite.product);
     }
 
+    /**
+     * Returns the hash code for this favorite.
+     * Uses the class hash code to avoid issues with lazy loading.
+     * 
+     * @return Hash code for this object
+     */
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
 
+    /**
+     * Returns a string representation of this favorite.
+     * Includes ID, user ID, product ID, and creation timestamp.
+     * 
+     * @return String representation of the favorite
+     */
     @Override
     public String toString() {
         return "Favorite{" +
