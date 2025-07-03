@@ -1,26 +1,81 @@
 package org.utku.shoppingapi.constants;
 
 /**
- * Application-wide constants to avoid magic numbers and strings.
- * This class centralizes all constant values used throughout the application.
- * Constants are grouped by functionality for better organization.
+ * Centralized repository of application-wide constants for the Shopping API.
+ * 
+ * <p>This utility class serves as the single source of truth for all constant
+ * values used throughout the e-commerce application. By centralizing constants,
+ * we eliminate magic numbers and strings, improve maintainability, and ensure
+ * consistency across the entire codebase.
+ * 
+ * <p>The constants are organized into logical groups using nested static classes:
+ * <ul>
+ *   <li>{@link Pagination} - Pagination and sorting defaults</li>
+ *   <li>{@link Validation} - Field length limits and validation constraints</li>
+ *   <li>{@link Cart} - Shopping cart business rules and limits</li>
+ *   <li>{@link ErrorMessages} - Standardized error messages</li>
+ *   <li>{@link Queries} - Database query constants</li>
+ *   <li>{@link ResponseMessages} - HTTP response messages</li>
+ * </ul>
+ * 
+ * <p>Design principles:
+ * <ul>
+ *   <li>Immutable constants using {@code public static final}</li>
+ *   <li>Logical grouping for better organization and discoverability</li>
+ *   <li>Backward compatibility through top-level constant aliases</li>
+ *   <li>Prevention of instantiation through private constructor</li>
+ * </ul>
+ * 
+ * <p>Usage examples:
+ * <pre>
+ * // Using grouped constants (recommended)
+ * int pageSize = AppConstants.Pagination.DEFAULT_SIZE;
+ * String errorMsg = AppConstants.ErrorMessages.USER_NOT_FOUND;
+ * 
+ * // Using backward-compatible constants
+ * int pageSize = AppConstants.DEFAULT_PAGE_SIZE;
+ * </pre>
+ * 
+ * @author Shopping API Development Team
+ * @version 1.0
+ * @since 1.0
  */
 public final class AppConstants {
     
     /**
-     * Pagination-related constants.
+     * Constants related to pagination and data retrieval configuration.
+     * 
+     * <p>These constants define default behaviors for paginated API endpoints,
+     * ensuring consistent pagination across all controllers and preventing
+     * performance issues from oversized result sets.
+     * 
+     * @since 1.0
      */
     public static final class Pagination {
+        /** Default number of items per page for paginated results. */
         public static final int DEFAULT_SIZE = 20;
+        /** Maximum allowed page size to prevent performance issues. */
         public static final int MAX_SIZE = 100;
+        /** Default field used for sorting when no sort parameter is specified. */
         public static final String DEFAULT_SORT_FIELD = "id";
+        /** Default sort direction (ascending) when no direction is specified. */
         public static final String DEFAULT_SORT_DIRECTION = "asc";
         
+        /** Private constructor to prevent instantiation of nested utility class. */
         private Pagination() {}
     }
     
     /**
-     * Validation-related constants for field lengths and constraints.
+     * Constants defining validation rules and field length constraints.
+     * 
+     * <p>These constants ensure consistent validation across all entities
+     * and DTOs, preventing database constraint violations and maintaining
+     * data quality standards.
+     * 
+     * <p>Values are aligned with database schema definitions to prevent
+     * data truncation and constraint violations.
+     * 
+     * @since 1.0
      */
     public static final class Validation {
         public static final int MIN_USERNAME_LENGTH = 3;
@@ -35,21 +90,37 @@ public final class AppConstants {
         public static final int MAX_CATEGORY_LENGTH = 100;
         public static final int MAX_SESSION_ID_LENGTH = 100;
         
+        /** Private constructor to prevent instantiation of nested utility class. */
         private Validation() {}
     }
     
     /**
-     * Cart and order-related constants.
+     * Constants governing shopping cart and order business rules.
+     * 
+     * <p>These constants define business constraints for e-commerce operations,
+     * such as minimum and maximum quantities that can be added to a cart.
+     * 
+     * @since 1.0
      */
     public static final class Cart {
         public static final int MIN_QUANTITY = 1;
         public static final int MAX_QUANTITY = 100;
         
+        /** Private constructor to prevent instantiation of nested utility class. */
         private Cart() {}
     }
     
     /**
-     * Error message constants for consistent messaging.
+     * Standardized error messages for consistent user communication.
+     * 
+     * <p>These constants ensure that error messages are consistent across
+     * the entire application, improving user experience and simplifying
+     * internationalization efforts.
+     * 
+     * <p>Messages are designed to be informative yet secure, avoiding
+     * exposure of sensitive system information.
+     * 
+     * @since 1.0
      */
     public static final class ErrorMessages {
         public static final String USER_NOT_FOUND = "User not found with id: ";
@@ -61,11 +132,21 @@ public final class AppConstants {
         public static final String PRODUCT_NOT_FOUND_IN_CART = "Product not found in cart";
         public static final String ALREADY_IN_FAVORITES = "Product is already in favorites";
         
+        /** Private constructor to prevent instantiation of nested utility class. */
         private ErrorMessages() {}
     }
     
     /**
-     * Database query constants to avoid magic strings in repositories.
+     * JPQL query constants for repository layer operations.
+     * 
+     * <p>These constants centralize complex JPQL queries used across
+     * repository classes, improving maintainability and reducing the
+     * risk of query syntax errors.
+     * 
+     * <p>All queries are optimized for performance and follow JPA
+     * best practices for entity relationships and fetching strategies.
+     * 
+     * @since 1.0
      */
     public static final class Queries {
         public static final String FIND_ACTIVE_USERS = "SELECT u FROM User u WHERE u.enabled = true";
@@ -74,11 +155,21 @@ public final class AppConstants {
         public static final String FIND_PRODUCTS_BY_PRICE_RANGE = "SELECT p FROM Product p WHERE p.price BETWEEN :minPrice AND :maxPrice AND p.active = true";
         public static final String FIND_LOW_STOCK_PRODUCTS = "SELECT p FROM Product p WHERE p.stockQuantity < :threshold AND p.active = true";
         
+        /** Private constructor to prevent instantiation of nested utility class. */
         private Queries() {}
     }
     
     /**
-     * HTTP response message constants for consistent API responses.
+     * Standardized HTTP response messages for API consistency.
+     * 
+     * <p>These constants ensure that API responses provide consistent
+     * messaging across all endpoints, improving client integration
+     * and user experience.
+     * 
+     * <p>Messages are designed to be informative for developers while
+     * remaining user-friendly for end-user applications.
+     * 
+     * @since 1.0
      */
     public static final class ResponseMessages {
         public static final String OPERATION_SUCCESSFUL = "Operation successful";
@@ -90,6 +181,7 @@ public final class AppConstants {
         public static final String USER_CANNOT_BE_DELETED = "This user cannot be deleted. Related orders exist.";
         public static final String INVALID_SORTING_PARAMETER = "Invalid sorting parameter. Usage: sort=id,asc or sort=username,desc. Valid fields: id, username, email, createdAt";
         
+        /** Private constructor to prevent instantiation of nested utility class. */
         private ResponseMessages() {}
     }
     
@@ -120,7 +212,15 @@ public final class AppConstants {
     public static final String PRODUCT_NOT_FOUND_IN_CART = ErrorMessages.PRODUCT_NOT_FOUND_IN_CART;
     public static final String ALREADY_IN_FAVORITES = ErrorMessages.ALREADY_IN_FAVORITES;
     
-    // Private constructor to prevent instantiation
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     * 
+     * <p>This class is designed to be used only for its static constants
+     * and should never be instantiated. The constructor throws an
+     * UnsupportedOperationException to enforce this design decision.
+     * 
+     * @throws UnsupportedOperationException always, to prevent instantiation
+     */
     private AppConstants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
