@@ -3,9 +3,9 @@ spring:
     name: ShoppingAPI
   
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/shopping_db}
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:password}
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   
   jpa:

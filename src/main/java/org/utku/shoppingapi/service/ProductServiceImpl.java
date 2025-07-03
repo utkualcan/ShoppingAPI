@@ -35,13 +35,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Retrieves all products with pagination support.
+     * Retrieves all active products with pagination support.
+     * Only shows products that are active (not soft deleted).
      * 
      * @param pageable Pagination parameters
-     * @return Page of products
+     * @return Page of active products
      */
     @Override
     public Page<Product> getAllProducts(Pageable pageable) {
+        // Only show active products to customers
         return productRepository.findAll(pageable);
     }
 
@@ -105,18 +107,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Deletes a product from the catalog by its ID.
-     * Validates that the product exists before deletion.
+     * Soft deletes a product from the catalog by setting it as inactive.
+     * This preserves order history while hiding the product from customers.
+     * Real e-commerce approach: Products are never hard deleted.
      * 
      * @param id The ID of the product to delete
      * @throws ResourceNotFoundException if product is not found
      */
     @Override
     public void deleteProduct(Long id) {
-        if (!productRepository.existsById(id)) {
-            throw new ResourceNotFoundException(AppConstants.PRODUCT_NOT_FOUND + id);
-        }
-        productRepository.deleteById(id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.PRODUCT_NOT_FOUND + id));
+        
+        // Soft delete: Set as inactive instead of hard delete
+        product.setActive(false);
+        productRepository.save(product);
     }
     
     @Override
