@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.utku.shoppingapi.dto.auth.JwtResponse;
 import org.utku.shoppingapi.dto.auth.LoginRequest;
+import org.utku.shoppingapi.dto.auth.LogoutResponse;
 import org.utku.shoppingapi.dto.auth.MessageResponse;
 import org.utku.shoppingapi.dto.auth.RegisterRequest;
+import org.utku.shoppingapi.dto.auth.UserInfoResponse;
 import org.utku.shoppingapi.service.AuthService;
 
 /**
@@ -47,6 +49,31 @@ public class AuthController {
     @Operation(summary = "User login", description = "Authenticate user and generate JWT token")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         JwtResponse response = authService.authenticateUser(loginRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Get current user information.
+     * 
+     * @return UserInfoResponse with current user details
+     */
+    @GetMapping("/me")
+    @Operation(summary = "Get current user info", description = "Get information about the currently authenticated user")
+    public ResponseEntity<UserInfoResponse> getCurrentUser() {
+        UserInfoResponse userInfo = authService.getCurrentUserInfo();
+        return ResponseEntity.ok(userInfo);
+    }
+
+    /**
+     * Logout user and invalidate JWT token.
+     * 
+     * @param authorizationHeader Authorization header containing JWT token
+     * @return LogoutResponse with success message
+     */
+    @PostMapping("/logout")
+    @Operation(summary = "User logout", description = "Logout user and invalidate JWT token")
+    public ResponseEntity<LogoutResponse> logoutUser(@RequestHeader("Authorization") String authorizationHeader) {
+        LogoutResponse response = authService.logoutUser(authorizationHeader);
         return ResponseEntity.ok(response);
     }
 }
