@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +26,13 @@ public class JwtUtil {
 
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
+
+    @PostConstruct
+    public void init() {
+        if (!StringUtils.hasText(jwtSecret) || jwtSecret.length() < 32) {
+            throw new IllegalStateException("JWT secret must be at least 32 characters long and properly configured via JWT_SECRET environment variable");
+        }
+    }
 
     /**
      * Generate JWT token from user authentication.
