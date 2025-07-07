@@ -59,8 +59,12 @@ public class SecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests(authz -> authz
-                        // Public endpoints - no authentication required
+                        // Public authentication endpoints - no authentication required
+                        .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        
+                        // Other public endpoints
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/cart/add").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
