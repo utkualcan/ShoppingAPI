@@ -54,6 +54,7 @@ springdoc:
     try-it-out-enabled: true
     filter: true
     display-request-duration: true
+    custom-js: /swagger-auth.js
 
 # JWT Configuration
 jwt:
