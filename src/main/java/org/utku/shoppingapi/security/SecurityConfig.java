@@ -17,6 +17,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import org.utku.shoppingapi.service.TokenBlacklistService;
+
 import java.util.Arrays;
 
 /**
@@ -31,18 +33,21 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final JwtUtil jwtUtil;
+    private final TokenBlacklistService tokenBlacklistService;
 
     public SecurityConfig(CustomUserDetailsService customUserDetailsService, 
                          JwtAuthenticationEntryPoint unauthorizedHandler,
-                         JwtUtil jwtUtil) {
+                         JwtUtil jwtUtil,
+                         TokenBlacklistService tokenBlacklistService) {
         this.customUserDetailsService = customUserDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.jwtUtil = jwtUtil;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil, customUserDetailsService);
+        return new JwtAuthenticationFilter(jwtUtil, customUserDetailsService, tokenBlacklistService);
     }
 
     @Bean
@@ -72,10 +77,13 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
                 // Public endpoints - no authentication required
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                 .requestMatchers("/api/products/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/actuator/health").permitAll() // Health check herkese açık
+                
+                // Authenticated user endpoints for auth
+                .requestMatchers("/api/auth/me", "/api/auth/logout").hasAnyRole("USER", "ADMIN")
                 
                 // Admin only endpoints
                 .requestMatchers("/api/users/**").hasRole("ADMIN")
