@@ -1,5 +1,6 @@
 package org.utku.shoppingapi;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -32,6 +33,12 @@ public class ShoppingApiApplication {
      * @param args Command line arguments passed to the application
      */
     public static void main(String[] args) {
+        // .env dosyasını yükle
+        Dotenv dotenv = Dotenv.load();
+
+        // Ortam değişkenlerini sisteme ekle
+        dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+
         SpringApplication.run(ShoppingApiApplication.class, args);
     }
 

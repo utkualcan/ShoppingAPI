@@ -1,5 +1,6 @@
 package org.utku.shoppingapi.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+import org.utku.shoppingapi.exception.CustomAccessDeniedHandler;
 import org.utku.shoppingapi.service.TokenBlacklistService;
 
 import java.util.Arrays;
@@ -32,15 +33,19 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final CustomAccessDeniedHandler accessDeniedHandler; // Yeni eklendi
     private final JwtUtil jwtUtil;
     private final TokenBlacklistService tokenBlacklistService;
 
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService, 
-                         JwtAuthenticationEntryPoint unauthorizedHandler,
-                         JwtUtil jwtUtil,
-                         TokenBlacklistService tokenBlacklistService) {
+    // Constructor güncellendi
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService,
+                          JwtAuthenticationEntryPoint unauthorizedHandler,
+                          CustomAccessDeniedHandler accessDeniedHandler, // Yeni eklendi
+                          JwtUtil jwtUtil,
+                          TokenBlacklistService tokenBlacklistService) {
         this.customUserDetailsService = customUserDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
+        this.accessDeniedHandler = accessDeniedHandler; // Yeni eklendi
         this.jwtUtil = jwtUtil;
         this.tokenBlacklistService = tokenBlacklistService;
     }
@@ -71,33 +76,36 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(authz -> authz
-                // Public endpoints - no authentication required
-                .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                .requestMatchers("/api/products/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/actuator/health").permitAll() // Health check herkese açık
-                
-                // Authenticated user endpoints for auth
-                .requestMatchers("/api/auth/me", "/api/auth/logout").hasAnyRole("USER", "ADMIN")
-                
-                // Admin only endpoints
-                .requestMatchers("/api/users/**").hasRole("ADMIN")
-                .requestMatchers("/api/cart/all").hasRole("ADMIN")
-                .requestMatchers("/actuator/**").hasRole("ADMIN") // Diğer actuator endpoint'leri sadece admin
-                
-                // Authenticated user endpoints (USER or ADMIN)
-                .requestMatchers("/api/cart/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/api/favorites/**").hasAnyRole("USER", "ADMIN")
-                
-                // All other endpoints require authentication
-                .anyRequest().authenticated()
-            );
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(unauthorizedHandler)
+                        .accessDeniedHandler(accessDeniedHandler) // 403 hataları için handler eklendi
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authz -> authz
+                        // Public endpoints - no authentication required
+                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/products/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
+
+                        // Authenticated user endpoints for auth
+                        .requestMatchers("/api/auth/me", "/api/auth/logout").hasAnyRole("USER", "ADMIN")
+
+                        // Admin only endpoints
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/cart/all").hasRole("ADMIN")
+                        .requestMatchers("/actuator/**").hasRole("ADMIN")
+
+                        // Authenticated user endpoints (USER or ADMIN)
+                        .requestMatchers("/api/cart/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/favorites/**").hasAnyRole("USER", "ADMIN")
+
+                        // All other endpoints require authentication
+                        .anyRequest().authenticated()
+                );
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -112,7 +120,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

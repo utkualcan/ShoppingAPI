@@ -1,100 +1,59 @@
 package org.utku.shoppingapi.service;
 
-import org.utku.shoppingapi.entity.Cart;
-
+import org.utku.shoppingapi.dto.CartDto;
+import org.utku.shoppingapi.dto.SimpleCartDto;
 import java.util.List;
 
 /**
- * Service interface for shopping cart management operations.
- * Defines the contract for cart-related business logic including:
- * - Cart CRUD operations
- * - Cart item management (add, update, remove)
- * - Cart clearing and user-specific operations
+ * Service interface for shopping cart management.
+ * Defines the contract for all cart-related business logic and security.
  */
 public interface CartService {
-    
+
     /**
-     * Retrieves all shopping carts in the system.
-     * 
-     * @return List of all carts
+     * [ADMIN] Retrieves all shopping carts in the system.
      */
-    List<Cart> getAllCarts();
-    
+    List<CartDto> findAllCarts();
+
     /**
-     * Retrieves all carts belonging to a specific user.
-     * 
-     * @param userId The ID of the user
-     * @return List of carts owned by the user
+     * [ADMIN / USER] Retrieves a shopping cart by its ID.
+     * Access is restricted to the cart owner or an ADMIN.
      */
-    List<Cart> getCartByUserId(Long userId);
-    
+    CartDto findCartById(Long cartId);
+
     /**
-     * Finds a specific cart by its ID.
-     * 
-     * @param id The cart ID
-     * @return The cart entity
+     * [ADMIN / USER] Retrieves a simplified version of a shopping cart by its ID.
+     * Access is restricted to the cart owner or an ADMIN.
      */
-    Cart findCartById(Long id);
-    
+    SimpleCartDto findSimpleCartById(Long cartId);
+
     /**
-     * Creates a new shopping cart.
-     * 
-     * @param cart The cart entity to create
-     * @return The created cart entity
+     * [ADMIN / USER] Retrieves all carts belonging to a specific user.
+     * Access is restricted to the user themselves or an ADMIN.
      */
-    Cart createCart(Cart cart);
-    
+    List<CartDto> findCartsByUserId(Long userId);
+
     /**
-     * Updates an existing cart.
-     * 
-     * @param id The ID of the cart to update
-     * @param cart Cart object containing updated information
-     * @return The updated cart entity
+     * Adds an item to the specified cart.
+     * Access is restricted to the cart owner or an ADMIN.
      */
-    Cart updateCart(Long id, Cart cart);
-    
+    CartDto addItemToCart(Long cartId, Long productId, int quantity);
+
     /**
-     * Deletes a cart by its ID.
-     * 
-     * @param id The ID of the cart to delete
+     * Updates the quantity of an item in the specified cart.
+     * Access is restricted to the cart owner or an ADMIN.
      */
-    void deleteCart(Long id);
-    
+    CartDto updateItemQuantity(Long cartId, Long productId, int quantity);
+
     /**
-     * Adds a product to the shopping cart.
-     * If the product already exists, increases the quantity.
-     * 
-     * @param cartId The ID of the cart
-     * @param productId The ID of the product to add
-     * @param quantity The quantity to add
-     * @return The updated cart entity
+     * Removes an item from the specified cart.
+     * Access is restricted to the cart owner or an ADMIN.
      */
-    Cart addItemToCart(Long cartId, Long productId, int quantity);
-    
+    CartDto removeItemFromCart(Long cartId, Long productId);
+
     /**
-     * Updates the quantity of a specific product in the cart.
-     * 
-     * @param cartId The ID of the cart
-     * @param productId The ID of the product to update
-     * @param quantity The new quantity
-     * @return The updated cart entity
+     * Clears all items from the specified cart.
+     * Access is restricted to the cart owner or an ADMIN.
      */
-    Cart updateItemQuantity(Long cartId, Long productId, int quantity);
-    
-    /**
-     * Removes a specific product from the shopping cart.
-     * 
-     * @param cartId The ID of the cart
-     * @param productId The ID of the product to remove
-     * @return The updated cart entity
-     */
-    Cart removeItemFromCart(Long cartId, Long productId);
-    
-    /**
-     * Clears all items from the shopping cart.
-     * 
-     * @param cartId The ID of the cart to clear
-     * @return The cleared cart entity
-     */
-    Cart clearCart(Long cartId);
+    CartDto clearCart(Long cartId);
 }

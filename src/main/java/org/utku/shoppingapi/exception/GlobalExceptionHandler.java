@@ -2,6 +2,7 @@ package org.utku.shoppingapi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException; // Yeni Import
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,74 +21,37 @@ import java.util.Map;
  * Global exception handler for the Shopping API.
  * This class handles all exceptions thrown by controllers and provides
  * consistent error responses across the application.
- * 
- * Handles various types of exceptions including:
- * - Resource not found errors
- * - Validation errors
- * - Data integrity violations
- * - Business logic exceptions
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * Handles ResourceNotFoundException thrown when requested resources are not found.
-     * 
-     * @param ex The ResourceNotFoundException instance
-     * @return ResponseEntity with 404 Not Found status and error message
-     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-    /**
-     * Handles InsufficientStockException thrown when there's not enough stock for an operation.
-     * 
-     * @param ex The InsufficientStockException instance
-     * @return ResponseEntity with 400 Bad Request status and error message
-     */
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<String> handleInsufficientStock(InsufficientStockException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    /**
-     * Handles IllegalArgumentException thrown when invalid arguments are provided.
-     * 
-     * @param ex The IllegalArgumentException instance
-     * @return ResponseEntity with 400 Bad Request status and error message
-     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    /**
-     * Handles TransactionSystemException, typically caused by validation errors during transaction commit.
-     * 
-     * @param ex The TransactionSystemException instance
-     * @return ResponseEntity with appropriate status and error message
-     */
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseEntity<String> handleValidation(TransactionSystemException ex) {
         if (ex.getCause() instanceof ConstraintViolationException) {
             ConstraintViolationException cve = (ConstraintViolationException) ex.getCause();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(AppConstants.ResponseMessages.VALIDATION_ERROR + 
-                          cve.getConstraintViolations().iterator().next().getMessage());
+                    .body(AppConstants.ResponseMessages.VALIDATION_ERROR +
+                            cve.getConstraintViolations().iterator().next().getMessage());
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(AppConstants.ResponseMessages.TRANSACTION_ERROR);
     }
 
-    /**
-     * Handles DataIntegrityViolationException thrown when database constraints are violated.
-     * Provides specific error messages for different types of constraint violations.
-     * 
-     * @param ex The DataIntegrityViolationException instance
-     * @return ResponseEntity with appropriate status and user-friendly error message
-     */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrity(DataIntegrityViolationException ex) {
         String message = ex.getMessage();
@@ -107,13 +71,6 @@ public class GlobalExceptionHandler {
                 .body(AppConstants.ResponseMessages.USER_CANNOT_BE_DELETED);
     }
 
-    /**
-     * Handles MethodArgumentNotValidException thrown when request body validation fails.
-     * Returns a map of field names and their corresponding error messages.
-     * 
-     * @param ex The MethodArgumentNotValidException instance
-     * @return ResponseEntity with 400 Bad Request status and validation error details
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -125,36 +82,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    /**
-     * Handles PropertyReferenceException thrown when invalid sorting parameters are provided.
-     * 
-     * @param ex The PropertyReferenceException instance
-     * @return ResponseEntity with 400 Bad Request status and sorting usage instructions
-     */
     @ExceptionHandler(PropertyReferenceException.class)
     public ResponseEntity<String> handlePropertyReferenceException(PropertyReferenceException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(AppConstants.ResponseMessages.INVALID_SORTING_PARAMETER);
     }
 
-    /**
-     * Handles BadCredentialsException thrown during authentication.
-     * 
-     * @param ex The BadCredentialsException instance
-     * @return ResponseEntity with 401 Unauthorized status and error message
-     */
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Invalid username or password");
     }
 
-    /**
-     * Handles UsernameNotFoundException thrown during authentication.
-     * 
-     * @param ex The UsernameNotFoundException instance
-     * @return ResponseEntity with 401 Unauthorized status and error message
-     */
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<String> handleUsernameNotFound(UsernameNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -162,17 +101,31 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handles RuntimeException thrown during user registration.
-     * 
-     * @param ex The RuntimeException instance
-     * @return ResponseEntity with 400 Bad Request status and error message
+     * Handles AccessDeniedException thrown when a user is not authorized to access a resource.
+     * This is crucial for handling role-based access control failures.
+     * * @param ex The AccessDeniedException instance
+     * @return ResponseEntity with 403 Forbidden status and a clear error message.
      */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("status", HttpStatus.FORBIDDEN.value());
+        body.put("error", "Forbidden");
+        body.put("message", "You do not have the required role to perform this action.");
+
+        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        if (ex.getMessage().contains("Username is already taken") || 
-            ex.getMessage().contains("Email is already in use")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        if (ex.getMessage() != null) {
+            if (ex.getMessage().contains("Username is already taken") ||
+                    ex.getMessage().contains("Email is already in use")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            }
         }
+        // Genel beklenmedik hataları loglamak iyi bir pratiktir.
+        // log.error("An unexpected error occurred: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("An unexpected error occurred");
     }
