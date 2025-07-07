@@ -1,6 +1,7 @@
 package org.utku.shoppingapi.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.utku.shoppingapi.dto.FavoriteDto;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/favorites")
 @Tag(name = "5. Favorite Management", description = "API for managing user favorite products")
+@PreAuthorize("hasRole('USER')")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
