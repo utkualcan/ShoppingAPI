@@ -2,16 +2,20 @@ package org.utku.shoppingapi.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.utku.shoppingapi.constants.AppConstants;
 import org.utku.shoppingapi.dto.request.UpdateUserRequest;
+import org.utku.shoppingapi.entity.Role;
 import org.utku.shoppingapi.entity.User;
 import org.utku.shoppingapi.exception.ResourceNotFoundException;
 import org.utku.shoppingapi.mapper.EntityMapper;
 import org.utku.shoppingapi.repository.UserRepository;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service implementation for comprehensive user management operations.
@@ -56,6 +60,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final EntityMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Constructs a new UserServiceImpl with required dependencies.
@@ -69,11 +74,13 @@ public class UserServiceImpl implements UserService {
      *                      Provides CRUD operations and custom queries for User entities.
      * @param mapper The mapper component for converting between User entities
      *              and various DTO representations.
+     * @param passwordEncoder The password encoder for securing user passwords.
      * @throws IllegalArgumentException if any parameter is null
      */
-    public UserServiceImpl(UserRepository userRepository, EntityMapper mapper) {
+    public UserServiceImpl(UserRepository userRepository, EntityMapper mapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -179,6 +186,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User createUser(User user) {
+        // Encode password if not already encoded
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        
+        // Assign USER role by default if no roles are set
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            Set<Role> defaultRoles = new HashSet<>();
+            defaultRoles.add(Role.USER);
+            user.setRoles(defaultRoles);
+        }
+        
         return userRepository.save(user);
     }
 

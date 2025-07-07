@@ -54,3 +54,8 @@ springdoc:
     try-it-out-enabled: true
     filter: true
     display-request-duration: true
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:mySecretKeyForJWTTokenGenerationThatIsLongEnoughToMeetSecurityRequirements}
+  expiration: 86400000  # 24 hours in milliseconds
