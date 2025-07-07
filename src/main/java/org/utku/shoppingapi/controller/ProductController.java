@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.utku.shoppingapi.constants.AppConstants;
 import org.utku.shoppingapi.dto.ProductDto;
@@ -203,6 +204,7 @@ public class ProductController {
      */
     @PostMapping
     @Operation(summary = "2. Create new product", description = "Create a new product in the catalog")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody CreateProductRequest request) {
         // Convert request to entity using mapper
         Product product = mapper.toEntity(request);
@@ -256,6 +258,7 @@ public class ProductController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "4. Update product", description = "Update an existing product's information")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest request) {
         Product existingProduct = productService.findProductById(id).orElseThrow();
         mapper.updateEntityFromRequest(existingProduct, request);
@@ -305,6 +308,7 @@ public class ProductController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "5. Delete product", description = "Permanently delete a product from the catalog")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

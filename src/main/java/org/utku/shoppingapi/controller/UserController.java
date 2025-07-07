@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.utku.shoppingapi.constants.AppConstants;
 import org.utku.shoppingapi.dto.UserDto;
@@ -99,6 +100,7 @@ public class UserController {
      */
     @GetMapping
     @Operation(summary = "1. List all users", description = "Retrieve paginated list of all users")
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<UserDto> getAllUsers(
             @Parameter(hidden = true) @PageableDefault(
                 size = AppConstants.DEFAULT_PAGE_SIZE, 
@@ -133,6 +135,7 @@ public class UserController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "3. Get user by ID", description = "Retrieve a specific user by their unique identifier")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         return userService.findUserById(id)
                 .map(mapper::toDto)
@@ -181,6 +184,7 @@ public class UserController {
      */
     @PostMapping
     @Operation(summary = "2. Create new user", description = "Create a new user account with the provided information")
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDto createUser(@Valid @RequestBody CreateUserRequest request) {
         // Convert request to entity using mapper
         User user = mapper.toEntity(request);
@@ -228,6 +232,7 @@ public class UserController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "4. Update user", description = "Update an existing user's information")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
         // Update user using service with request data
         User updatedUser = userService.updateUser(id, request);
@@ -275,6 +280,7 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "5. Delete user", description = "Permanently delete a user account")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();

@@ -1,6 +1,7 @@
 package org.utku.shoppingapi.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.utku.shoppingapi.dto.OrderDto;
 import org.utku.shoppingapi.dto.SimpleOrderDto;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/orders")
 @Tag(name = "4. Order Management", description = "API for managing orders and order history")
+@PreAuthorize("hasRole('USER')")
 public class OrderController {
 
     private final OrderService orderService;

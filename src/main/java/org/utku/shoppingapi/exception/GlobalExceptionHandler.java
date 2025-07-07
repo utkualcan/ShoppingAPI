@@ -2,6 +2,8 @@ package org.utku.shoppingapi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.transaction.TransactionSystemException;
@@ -133,5 +135,45 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlePropertyReferenceException(PropertyReferenceException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(AppConstants.ResponseMessages.INVALID_SORTING_PARAMETER);
+    }
+
+    /**
+     * Handles BadCredentialsException thrown during authentication.
+     * 
+     * @param ex The BadCredentialsException instance
+     * @return ResponseEntity with 401 Unauthorized status and error message
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid username or password");
+    }
+
+    /**
+     * Handles UsernameNotFoundException thrown during authentication.
+     * 
+     * @param ex The UsernameNotFoundException instance
+     * @return ResponseEntity with 401 Unauthorized status and error message
+     */
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<String> handleUsernameNotFound(UsernameNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid username or password");
+    }
+
+    /**
+     * Handles RuntimeException thrown during user registration.
+     * 
+     * @param ex The RuntimeException instance
+     * @return ResponseEntity with 400 Bad Request status and error message
+     */
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        if (ex.getMessage().contains("Username is already taken") || 
+            ex.getMessage().contains("Email is already in use")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An unexpected error occurred");
     }
 }
