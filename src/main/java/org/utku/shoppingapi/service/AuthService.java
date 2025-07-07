@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.utku.shoppingapi.dto.auth.JwtResponse;
 import org.utku.shoppingapi.dto.auth.LoginRequest;
+import org.utku.shoppingapi.dto.auth.LogoutResponse;
 import org.utku.shoppingapi.dto.auth.MessageResponse;
 import org.utku.shoppingapi.dto.auth.RegisterRequest;
+import org.utku.shoppingapi.dto.auth.UserInfoResponse;
 import org.utku.shoppingapi.entity.Role;
 import org.utku.shoppingapi.entity.User;
 import org.utku.shoppingapi.exception.ResourceNotFoundException;
@@ -42,6 +44,9 @@ public class AuthService {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
 
     /**
      * Register a new user with USER role by default.
@@ -118,5 +123,49 @@ public class AuthService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    /**
+     * Get current user information as DTO.
+     * 
+     * @return UserInfoResponse with current user details
+     */
+    public UserInfoResponse getCurrentUserInfo() {
+        User user = getCurrentUser();
+        Set<String> roles = user.getRoles().stream()
+                .map(role -> role.name())
+                .collect(Collectors.toSet());
+        
+        return new UserInfoResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getFullName(),
+                user.getPhoneNumber(),
+                roles,
+                user.getCreatedAt(),
+                user.getEnabled()
+        );
+    }
+
+    /**
+     * Logout user by blacklisting their JWT token.
+     * 
+     * @param token JWT token to blacklist
+     * @return LogoutResponse with success message
+     */
+    public LogoutResponse logoutUser(String token) {
+        // Extract token from Authorization header if it includes "Bearer "
+        String jwtToken = token.startsWith("Bearer ") ? token.substring(7) : token;
+        
+        // Add token to blacklist
+        tokenBlacklistService.blacklistToken(jwtToken);
+        
+        // Clear security context
+        SecurityContextHolder.clearContext();
+        
+        return new LogoutResponse("User logged out successfully");
     }
 }
