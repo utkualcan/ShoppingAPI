@@ -1,6 +1,7 @@
 package org.utku.shoppingapi.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.utku.shoppingapi.dto.CartDto;
@@ -55,6 +56,7 @@ public class CartController {
      */
     @GetMapping
     @Operation(summary = "1. Get all carts", description = "Retrieve all shopping carts in the system")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<CartDto> getAllCarts() {
         return cartService.getAllCarts().stream()
                 .map(mapper::toDto)
@@ -136,6 +138,7 @@ public class CartController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "7. Get cart by ID", description = "Retrieve a specific shopping cart by its unique identifier")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CartDto> getCartById(@PathVariable Long id) {
         return ResponseEntity.ok(mapper.toDto(cartService.findCartById(id)));
     }
