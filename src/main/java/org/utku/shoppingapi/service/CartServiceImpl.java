@@ -15,6 +15,7 @@ import org.utku.shoppingapi.exception.ResourceNotFoundException;
 import org.utku.shoppingapi.mapper.EntityMapper;
 import org.utku.shoppingapi.repository.CartRepository;
 import org.utku.shoppingapi.repository.ProductRepository;
+import org.utku.shoppingapi.repository.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,11 +31,13 @@ public class CartServiceImpl implements CartService {
     private static final Logger logger = LoggerFactory.getLogger(CartServiceImpl.class);
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
     private final EntityMapper mapper;
 
-    public CartServiceImpl(CartRepository cartRepository, ProductRepository productRepository, EntityMapper mapper) {
+    public CartServiceImpl(CartRepository cartRepository, ProductRepository productRepository, UserRepository userRepository, EntityMapper mapper) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
         this.mapper = mapper;
     }
 
@@ -67,15 +70,21 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN') or @securityService.isCartOwner(#cartId)")
-    public CartDto addItemToCart(Long cartId, Long productId, int quantity) {
-        Cart cart = findCartEntityById(cartId);
+    @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
+    public CartDto addItemToCart(Long userId, Long productId, int quantity) {
+        // Kullanıcıya ait mevcut bir sepeti bul veya yeni bir sepet oluştur
+        Cart cart = cartRepository.findByUserId(userId).stream()
+                .findFirst()
+                .orElseGet(() -> createCartForUser(userId));
+
         Product product = findProductEntityById(productId);
 
+        // Sepette ürün var mı kontrol et
         CartItem existingItem = findItemByProduct(cart, product);
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
         } else {
+            // Yeni ürün ekle
             CartItem newItem = new CartItem();
             newItem.setProduct(product);
             newItem.setQuantity(quantity);
@@ -83,6 +92,7 @@ public class CartServiceImpl implements CartService {
             newItem.setCart(cart);
             cart.getItems().add(newItem);
         }
+
         return mapper.toDto(cartRepository.save(cart));
     }
 
@@ -138,5 +148,12 @@ public class CartServiceImpl implements CartService {
                 .filter(item -> item.getProduct().equals(product))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private Cart createCartForUser(Long userId) {
+        Cart cart = new Cart();
+        cart.setUser(userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.USER_NOT_FOUND + userId)));
+        return cartRepository.save(cart);
     }
 }
