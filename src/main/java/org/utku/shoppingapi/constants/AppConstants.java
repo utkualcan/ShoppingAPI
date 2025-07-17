@@ -131,6 +131,7 @@ public final class AppConstants {
         public static final String INSUFFICIENT_STOCK = "Insufficient stock for product: ";
         public static final String PRODUCT_NOT_FOUND_IN_CART = "Product not found in cart";
         public static final String ALREADY_IN_FAVORITES = "Product is already in favorites";
+        public static final String RESOURCE_IN_USE = "This resource cannot be deleted because it is in use by other records.";
         
         /** Private constructor to prevent instantiation of nested utility class. */
         private ErrorMessages() {}
@@ -211,6 +212,7 @@ public final class AppConstants {
     public static final String INSUFFICIENT_STOCK = ErrorMessages.INSUFFICIENT_STOCK;
     public static final String PRODUCT_NOT_FOUND_IN_CART = ErrorMessages.PRODUCT_NOT_FOUND_IN_CART;
     public static final String ALREADY_IN_FAVORITES = ErrorMessages.ALREADY_IN_FAVORITES;
+    public static final String RESOURCE_IN_USE = ErrorMessages.RESOURCE_IN_USE;
     
     /**
      * Private constructor to prevent instantiation of this utility class.

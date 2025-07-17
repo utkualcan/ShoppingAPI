@@ -2,7 +2,7 @@ package org.utku.shoppingapi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException; // Yeni Import
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -52,24 +52,42 @@ public class GlobalExceptionHandler {
                 .body(AppConstants.ResponseMessages.TRANSACTION_ERROR);
     }
 
+    /**
+     * Handles database integrity violations.
+     * This updated method provides more specific error responses for common issues
+     * like foreign key constraints and duplicate entries.
+     *
+     * @param ex The DataIntegrityViolationException instance.
+     * @return ResponseEntity with a specific status and a clear error message.
+     */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrity(DataIntegrityViolationException ex) {
-        String message = ex.getMessage();
+        // Get the most specific cause to analyze the root problem from the database.
+        String message = ex.getMostSpecificCause().getMessage().toLowerCase();
+
+        // Check for foreign key constraint violation (resource in use).
+        if (message.contains("violates foreign key constraint")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT) // Use 409 Conflict for this case.
+                    .body(AppConstants.ErrorMessages.RESOURCE_IN_USE); // Provide a clear, user-friendly message.
+        }
+
+        // Check for duplicate key violation (e.g., unique username or email).
+        if (message.contains("duplicate key") || message.contains("unique constraint")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(AppConstants.ResponseMessages.DUPLICATE_ENTRY);
+        }
+
+        // Check for "value too long" error.
         if (message.contains("value too long")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(AppConstants.ResponseMessages.DATA_TOO_LONG);
         }
-        if (message.contains("duplicate key") || message.contains("already exists")) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(AppConstants.ResponseMessages.DUPLICATE_ENTRY);
-        }
-        if (message.contains("foreign key constraint") || message.contains("is not present in table")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(AppConstants.ResponseMessages.REFERENCED_RECORD_NOT_EXISTS);
-        }
+
+        // A generic fallback for other data integrity issues.
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(AppConstants.ResponseMessages.USER_CANNOT_BE_DELETED);
+                .body("A database integrity error occurred. Please check your request.");
     }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -100,12 +118,6 @@ public class GlobalExceptionHandler {
                 .body("Invalid username or password");
     }
 
-    /**
-     * Handles AccessDeniedException thrown when a user is not authorized to access a resource.
-     * This is crucial for handling role-based access control failures.
-     * * @param ex The AccessDeniedException instance
-     * @return ResponseEntity with 403 Forbidden status and a clear error message.
-     */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException ex) {
         Map<String, Object> body = new HashMap<>();
@@ -124,7 +136,7 @@ public class GlobalExceptionHandler {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
             }
         }
-        // Genel beklenmedik hataları loglamak iyi bir pratiktir.
+        // It's good practice to log unexpected errors.
         // log.error("An unexpected error occurred: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("An unexpected error occurred");

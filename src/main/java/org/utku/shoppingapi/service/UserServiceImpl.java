@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.utku.shoppingapi.constants.AppConstants;
 import org.utku.shoppingapi.dto.request.UpdateUserRequest;
 import org.utku.shoppingapi.entity.Role;
@@ -63,6 +64,10 @@ public class UserServiceImpl implements UserService {
 
         mapper.updateEntityFromRequest(existing, request);
 
+        if (StringUtils.hasText(request.getPassword())) {
+            existing.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
         return userRepository.save(existing);
     }
 
@@ -81,6 +86,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName("User");
         user.setPhoneNumber(null);
         user.setEnabled(false);
+        user.setPassword(null);
 
         userRepository.save(user);
     }
