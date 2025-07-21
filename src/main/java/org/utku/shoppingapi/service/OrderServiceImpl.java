@@ -64,13 +64,16 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Creating order from cart ID: {}", cartId);
         // Find cart and validate items
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.CART_NOT_FOUND + cartId));
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
             throw new IllegalArgumentException(AppConstants.CART_IS_EMPTY);
         }
         // Check stock for each item and update product stock
         for (CartItem cartItem : cart.getItems()) {
             Product product = cartItem.getProduct();
+            if (product == null) {
+                throw new ResourceNotFoundException("Product not found");
+            }
             if (product.getStockQuantity() < cartItem.getQuantity()) {
                 throw new InsufficientStockException(AppConstants.INSUFFICIENT_STOCK + product.getName());
             }

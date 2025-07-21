@@ -15,18 +15,31 @@ import org.utku.shoppingapi.dto.auth.RegisterRequest;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Integration tests for authentication endpoints.
+ * Validates registration, login, and access control scenarios.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
 class AuthIntegrationTest {
 
+    /**
+     * Injects the MockMvc for simulating HTTP requests.
+     */
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Injects the ObjectMapper for JSON serialization/deserialization.
+     */
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Tests that registration with valid data returns success response.
+     */
     @Test
     void register_WithValidData_ShouldReturnSuccess() throws Exception {
         RegisterRequest request = new RegisterRequest();
@@ -45,6 +58,9 @@ class AuthIntegrationTest {
                 .andExpect(jsonPath("$.role").value("USER"));
     }
 
+    /**
+     * Tests that registration with duplicate username returns error response.
+     */
     @Test
     void register_WithDuplicateUsername_ShouldReturnError() throws Exception {
         // First registration
@@ -70,6 +86,9 @@ class AuthIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    /**
+     * Tests that login with valid credentials returns JWT token.
+     */
     @Test
     void login_WithValidCredentials_ShouldReturnJwtToken() throws Exception {
         // First register a user
@@ -98,6 +117,9 @@ class AuthIntegrationTest {
                 .andExpect(jsonPath("$.roles").exists());
     }
 
+    /**
+     * Tests that login with invalid credentials returns unauthorized response.
+     */
     @Test
     void login_WithInvalidCredentials_ShouldReturnUnauthorized() throws Exception {
         LoginRequest loginRequest = new LoginRequest();
@@ -110,12 +132,18 @@ class AuthIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Tests that accessing protected endpoint without token returns unauthorized.
+     */
     @Test
     void accessProtectedEndpoint_WithoutToken_ShouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get("/api/users"))
                 .andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Tests that accessing public endpoint without token returns success.
+     */
     @Test
     void accessPublicEndpoint_WithoutToken_ShouldReturnSuccess() throws Exception {
         mockMvc.perform(get("/api/products"))
