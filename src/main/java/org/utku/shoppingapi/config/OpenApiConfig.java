@@ -21,36 +21,34 @@ public class OpenApiConfig {
 
     /**
      * Configures OpenAPI documentation with custom info and server details.
-     * * @return OpenAPI configuration object
+     * @return OpenAPI configuration object
      */
     @Bean
     public OpenAPI customOpenAPI() {
-        // Güvenlik Şeması Tanımlaması (JWT Bearer Token)
-        final String securitySchemeName = "bearerAuth";
+        final String securitySchemeName = "bearerAuth"; // Name for JWT security scheme
 
+        // Build and return OpenAPI configuration
         return new OpenAPI()
                 .info(new Info()
-                        .title("Shopping API")
-                        .version("1.0.0")
-                        .description("Comprehensive REST API for e-commerce shopping platform")
+                        .title("Shopping API") // API title
+                        .version("1.0.0") // API version
+                        .description("Comprehensive REST API for e-commerce shopping platform") // API description
                         .contact(new Contact()
-                                .name("API Support")
-                                .email("support@shoppingapi.com")))
+                                .name("API Support") // Contact name
+                                .email("support@shoppingapi.com"))) // Contact email
                 .servers(List.of(
                         new Server()
-                                .url("http://localhost:8080")
-                                .description("Development Server")))
-                // Güvenlik Gereksinimini Ekle
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
-                // Güvenlik Komponentlerini Tanımla
+                                .url("http://localhost:8080") // Local development server URL
+                                .description("Development Server"))) // Server description
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName)) // Add JWT security requirement
                 .components(
                         new Components()
                                 .addSecuritySchemes(securitySchemeName,
                                         new SecurityScheme()
-                                                .name(securitySchemeName)
-                                                .type(SecurityScheme.Type.HTTP)
-                                                .scheme("bearer")
-                                                .bearerFormat("JWT")
+                                                .name(securitySchemeName) // Security scheme name
+                                                .type(SecurityScheme.Type.HTTP) // HTTP authentication type
+                                                .scheme("bearer") // Bearer token scheme
+                                                .bearerFormat("JWT") // JWT format
                                 )
                 );
     }

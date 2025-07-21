@@ -81,15 +81,15 @@ public final class AppConstants {
         public static final int MIN_USERNAME_LENGTH = 3;
         public static final int MAX_USERNAME_LENGTH = 50;
         public static final int MIN_PASSWORD_LENGTH = 6;
-        public static final int MAX_PHONE_LENGTH = 15;
-        public static final int MAX_EMAIL_LENGTH = 100;
-        public static final int MAX_NAME_LENGTH = 100;
-        public static final int MAX_PRODUCT_NAME_LENGTH = 255;
-        public static final int MIN_PRODUCT_NAME_LENGTH = 2;
-        public static final int MAX_DESCRIPTION_LENGTH = 1000;
-        public static final int MAX_CATEGORY_LENGTH = 100;
-        public static final int MAX_SESSION_ID_LENGTH = 100;
-        
+        public static final int MAX_PHONE_LENGTH = 15; // Maximum allowed length for phone numbers
+        public static final int MAX_EMAIL_LENGTH = 100; // Maximum allowed length for email addresses
+        public static final int MAX_NAME_LENGTH = 100; // Maximum allowed length for user names
+        public static final int MAX_PRODUCT_NAME_LENGTH = 255; // Maximum allowed length for product names
+        public static final int MIN_PRODUCT_NAME_LENGTH = 2; // Minimum allowed length for product names
+        public static final int MAX_DESCRIPTION_LENGTH = 1000; // Maximum allowed length for product descriptions
+        public static final int MAX_CATEGORY_LENGTH = 100; // Maximum allowed length for category names
+        public static final int MAX_SESSION_ID_LENGTH = 100; // Maximum allowed length for session IDs
+
         /** Private constructor to prevent instantiation of nested utility class. */
         private Validation() {}
     }
@@ -103,9 +103,9 @@ public final class AppConstants {
      * @since 1.0
      */
     public static final class Cart {
-        public static final int MIN_QUANTITY = 1;
-        public static final int MAX_QUANTITY = 100;
-        
+        public static final int MIN_QUANTITY = 1; // Minimum quantity allowed per cart item
+        public static final int MAX_QUANTITY = 100; // Maximum quantity allowed per cart item
+
         /** Private constructor to prevent instantiation of nested utility class. */
         private Cart() {}
     }

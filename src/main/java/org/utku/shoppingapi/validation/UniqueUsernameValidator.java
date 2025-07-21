@@ -14,12 +14,14 @@ import org.utku.shoppingapi.repository.UserRepository;
 @Component
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {
 
+    /**
+     * UserRepository instance for checking username existence in the database.
+     */
     @Autowired
     private UserRepository userRepository;
 
     /**
      * Initializes the validator (no initialization needed for this validator).
-     * 
      * @param constraintAnnotation The annotation instance
      */
     @Override
@@ -29,7 +31,8 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
 
     /**
      * Validates that the provided username is unique.
-     * 
+     * Returns true if the username is not present in the database or is null.
+     * Returns false if the username already exists.
      * @param username The username to validate
      * @param context The validation context
      * @return true if username is unique or null, false if already taken

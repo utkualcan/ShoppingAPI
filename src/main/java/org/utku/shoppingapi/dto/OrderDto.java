@@ -33,22 +33,18 @@ public class OrderDto {
      * Unique identifier of the order.
      */
     private Long id;
-    
     /**
      * ID of the user who placed the order.
      */
     private Long userId;
-    
     /**
      * List of items in the order.
      */
     private List<OrderItemDto> items;
-    
     /**
      * Total amount of the order.
      */
     private BigDecimal totalAmount;
-    
     /**
      * Timestamp when the order was placed.
      */

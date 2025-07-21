@@ -31,27 +31,22 @@ public class SimpleOrderDto {
      * Order number for customer reference.
      */
     private Long orderId;
-    
     /**
      * Customer name who placed the order.
      */
     private String customerName;
-    
     /**
      * Simplified list of ordered products.
      */
     private List<SimpleOrderItemDto> items;
-    
     /**
      * Total amount of the order.
      */
     private BigDecimal totalAmount;
-    
     /**
      * When the order was placed.
      */
     private LocalDateTime orderedAt;
-    
     /**
      * Total number of items in the order.
      */

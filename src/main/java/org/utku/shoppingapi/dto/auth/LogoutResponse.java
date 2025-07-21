@@ -12,7 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LogoutResponse {
+    /**
+     * Logout operation result message.
+     */
     private String message;
+    /**
+     * Status of the logout operation (e.g., "success").
+     */
     private String status;
     
     public LogoutResponse(String message) {

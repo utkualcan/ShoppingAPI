@@ -19,27 +19,52 @@ import java.util.Map;
 
 /**
  * Global exception handler for the Shopping API.
- * This class handles all exceptions thrown by controllers and provides
+ * Handles all exceptions thrown by controllers and provides
  * consistent error responses across the application.
+ * <p>
+ * Usage scenarios:
+ * <ul>
+ *   <li>Handles validation, database, authentication, and business logic errors</li>
+ *   <li>Returns standardized error messages and status codes</li>
+ * </ul>
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
+    /**
+     * Handles ResourceNotFoundException and returns 404 status.
+     * @param ex the exception
+     * @return ResponseEntity with error message
+     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
+    /**
+     * Handles InsufficientStockException and returns 400 status.
+     * @param ex the exception
+     * @return ResponseEntity with error message
+     */
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<String> handleInsufficientStock(InsufficientStockException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    /**
+     * Handles IllegalArgumentException and returns 400 status.
+     * @param ex the exception
+     * @return ResponseEntity with error message
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    /**
+     * Handles validation errors from JPA transactions.
+     * @param ex the exception
+     * @return ResponseEntity with validation error message
+     */
     @ExceptionHandler(TransactionSystemException.class)
     public ResponseEntity<String> handleValidation(TransactionSystemException ex) {
         if (ex.getCause() instanceof ConstraintViolationException) {
@@ -53,12 +78,9 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handles database integrity violations.
-     * This updated method provides more specific error responses for common issues
-     * like foreign key constraints and duplicate entries.
-     *
-     * @param ex The DataIntegrityViolationException instance.
-     * @return ResponseEntity with a specific status and a clear error message.
+     * Handles database integrity violations (foreign key, duplicate, value too long).
+     * @param ex the exception
+     * @return ResponseEntity with specific error message
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrity(DataIntegrityViolationException ex) {
@@ -88,7 +110,11 @@ public class GlobalExceptionHandler {
                 .body("A database integrity error occurred. Please check your request.");
     }
 
-
+    /**
+     * Handles validation errors from request body.
+     * @param ex the exception
+     * @return ResponseEntity with field error messages
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -100,24 +126,44 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
+    /**
+     * Handles invalid property reference in sorting or filtering.
+     * @param ex the exception
+     * @return ResponseEntity with sorting error message
+     */
     @ExceptionHandler(PropertyReferenceException.class)
     public ResponseEntity<String> handlePropertyReferenceException(PropertyReferenceException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(AppConstants.ResponseMessages.INVALID_SORTING_PARAMETER);
     }
 
+    /**
+     * Handles authentication failures due to bad credentials.
+     * @param ex the exception
+     * @return ResponseEntity with authentication error message
+     */
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Invalid username or password");
     }
 
+    /**
+     * Handles authentication failures due to missing user.
+     * @param ex the exception
+     * @return ResponseEntity with authentication error message
+     */
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<String> handleUsernameNotFound(UsernameNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Invalid username or password");
     }
 
+    /**
+     * Handles access denied exceptions and returns 403 status.
+     * @param ex the exception
+     * @return ResponseEntity with forbidden error message
+     */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException ex) {
         Map<String, Object> body = new HashMap<>();
@@ -128,6 +174,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
     }
 
+    /**
+     * Handles unexpected runtime exceptions.
+     * @param ex the exception
+     * @return ResponseEntity with generic error message
+     */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         if (ex.getMessage() != null) {

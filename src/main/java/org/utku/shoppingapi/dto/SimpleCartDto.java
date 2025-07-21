@@ -30,27 +30,22 @@ public class SimpleCartDto {
      * Cart number for customer reference.
      */
     private Long cartId;
-    
     /**
      * Customer name who owns the cart.
      */
     private String customerName;
-    
     /**
      * Simplified list of cart items.
      */
     private List<SimpleCartItemDto> items;
-    
     /**
      * Total price of all items in cart.
      */
     private BigDecimal totalPrice;
-    
     /**
      * Total number of items in cart.
      */
     private Integer totalItems;
-    
     /**
      * Number of different products in cart.
      */

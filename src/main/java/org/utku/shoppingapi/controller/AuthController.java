@@ -27,8 +27,8 @@ public class AuthController {
     private AuthService authService;
 
     /**
-     * Register a new user account.
-     * 
+     * Registers a new user account.
+     *
      * @param registerRequest Registration request data
      * @return MessageResponse with success message and user details
      */
@@ -40,8 +40,8 @@ public class AuthController {
     }
 
     /**
-     * Authenticate user and generate JWT token.
-     * 
+     * Authenticates user and generates JWT token.
+     *
      * @param loginRequest Login request data
      * @return JwtResponse with token and user details
      */
@@ -53,8 +53,8 @@ public class AuthController {
     }
 
     /**
-     * Get current user information.
-     * 
+     * Retrieves current user information.
+     *
      * @return UserInfoResponse with current user details
      */
     @GetMapping("/me")
@@ -65,8 +65,8 @@ public class AuthController {
     }
 
     /**
-     * Logout user and invalidate JWT token.
-     * 
+     * Logs out user and invalidates JWT token.
+     *
      * @param authorizationHeader Authorization header containing JWT token
      * @return LogoutResponse with success message
      */

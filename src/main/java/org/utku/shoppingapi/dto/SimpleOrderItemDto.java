@@ -29,22 +29,18 @@ public class SimpleOrderItemDto {
      * Product name.
      */
     private String productName;
-    
     /**
      * Product category.
      */
     private String category;
-    
     /**
      * Quantity ordered.
      */
     private Integer quantity;
-    
     /**
      * Price per unit at time of order.
      */
     private BigDecimal unitPrice;
-    
     /**
      * Total price for this item.
      */

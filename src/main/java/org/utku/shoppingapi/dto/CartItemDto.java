@@ -25,24 +25,24 @@ public class CartItemDto {
      * Unique identifier of the cart item.
      */
     private Long id;
-    
+
     /**
-     * Complete product information.
+     * Complete product information for this cart item.
      */
     private ProductDto product;
-    
+
     /**
      * Quantity of the product in the cart.
      */
     private Integer quantity;
-    
+
     /**
      * Unit price of the product when added to cart.
      */
-    private BigDecimal unitPrice;
-    
+    private java.math.BigDecimal unitPrice;
+
     /**
      * Total price for this cart item (unit price × quantity).
      */
-    private BigDecimal totalPrice;
+    private java.math.BigDecimal totalPrice;
 }

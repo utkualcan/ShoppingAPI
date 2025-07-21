@@ -21,12 +21,10 @@ public class ApiResponse<T> {
      * Indicates whether the operation was successful.
      */
     private boolean success;
-    
     /**
      * Human-readable message describing the result.
      */
     private String message;
-    
     /**
      * The actual data payload of the response.
      */
