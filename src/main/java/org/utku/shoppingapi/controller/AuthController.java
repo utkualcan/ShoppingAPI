@@ -23,8 +23,12 @@ import org.utku.shoppingapi.service.AuthService;
 @Tag(name = "Authentication", description = "Authentication and user registration endpoints")
 public class AuthController {
 
+    private final AuthService authService;
+
     @Autowired
-    private AuthService authService;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     /**
      * Registers a new user account.

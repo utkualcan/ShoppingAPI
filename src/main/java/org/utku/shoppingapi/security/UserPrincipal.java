@@ -3,7 +3,6 @@ package org.utku.shoppingapi.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.utku.shoppingapi.entity.Role;
 import org.utku.shoppingapi.entity.User;
 
 import java.util.Collection;

@@ -40,7 +40,7 @@ public class Product {
      * Name of the product.
      * Must be within allowed length range and cannot be blank.
      */
-    @Column(nullable = false, length = AppConstants.MAX_PRODUCT_NAME_LENGTH)
+    @Column // length parameter deleted.
     @NotBlank(message = "Product name cannot be empty")
     @Size(min = AppConstants.MIN_PRODUCT_NAME_LENGTH, max = AppConstants.MAX_PRODUCT_NAME_LENGTH, 
           message = "Product name must be between " + AppConstants.MIN_PRODUCT_NAME_LENGTH + 
@@ -93,7 +93,7 @@ public class Product {
      * Automatically set on entity creation and never updated.
      */
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     /**
