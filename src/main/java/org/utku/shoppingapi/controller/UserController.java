@@ -106,10 +106,10 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         User user = userService.findUserById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Kullanıcı bulunamadı: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User couldn't found: " + id));
 
         if (user.getRoles().stream().anyMatch(role -> role != null && role.toString().equalsIgnoreCase("ADMIN"))) {
-            throw new IllegalArgumentException("Admin kullanıcılar silinemez.");
+            throw new IllegalArgumentException("Admin user can't be deleted.");
         }
 
         userService.deleteUser(id);
