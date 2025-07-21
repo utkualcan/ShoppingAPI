@@ -6,17 +6,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.utku.shoppingapi.constants.AppConstants;
 import org.utku.shoppingapi.dto.request.UpdateUserRequest;
-import org.utku.shoppingapi.entity.Role;
 import org.utku.shoppingapi.entity.User;
 import org.utku.shoppingapi.exception.ResourceNotFoundException;
-import org.utku.shoppingapi.mapper.EntityMapper;
 import org.utku.shoppingapi.repository.UserRepository;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Implementation of UserService.

@@ -17,8 +17,12 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
     /**
      * UserRepository instance for checking username existence in the database.
      */
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UniqueUsernameValidator(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Initializes the validator (no initialization needed for this validator).
