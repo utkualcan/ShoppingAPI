@@ -1,5 +1,10 @@
 package org.utku.shoppingapi.integration;
 
+/**
+ * Integration tests for public security endpoints.
+ * Validates accessibility of registration endpoints without authentication.
+ */
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +25,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class SecurityPublicEndpointTest {
 
+    /**
+     * Injects the MockMvc for simulating HTTP requests.
+     */
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Injects the ObjectMapper for JSON serialization/deserialization.
+     */
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Tests that the public registration endpoint is accessible without authentication.
+     */
     @Test
     void publicRegistrationEndpoint_ShouldBeAccessibleWithoutAuthentication() throws Exception {
         RegisterRequest request = new RegisterRequest();
@@ -43,6 +57,9 @@ class SecurityPublicEndpointTest {
                 .andExpect(jsonPath("$.role").value("USER"));
     }
 
+    /**
+     * Tests that the specific registration endpoint is accessible without authentication.
+     */
     @Test
     void specificRegistrationEndpoint_ShouldBeAccessibleWithoutAuthentication() throws Exception {
         RegisterRequest request = new RegisterRequest();

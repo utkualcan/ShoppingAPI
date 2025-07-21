@@ -1,3 +1,8 @@
+# =====================================================================
+# Application test configuration for Spring Boot (application-test.yml)
+# This file sets up the test environment using H2 in-memory database,
+# JPA settings, and JWT test key for integration and unit tests.
+# =====================================================================
 spring:
   datasource:
     url: jdbc:h2:mem:testdb

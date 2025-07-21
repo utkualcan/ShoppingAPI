@@ -55,6 +55,15 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Product createProduct(Product product) {
+        if (product.getName() == null || product.getName().trim().isEmpty()) {
+            throw new org.utku.shoppingapi.exception.ValidationException("Product name cannot be empty");
+        }
+        if (product.getPrice() == null || product.getPrice().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+            throw new org.utku.shoppingapi.exception.ValidationException("Product price must be greater than zero");
+        }
+        if (product.getStockQuantity() == null || product.getStockQuantity() < 1) {
+            throw new org.utku.shoppingapi.exception.ValidationException("Product stock must be at least 1");
+        }
         // Save new product to repository
         return productRepository.save(product);
     }

@@ -96,6 +96,12 @@ public class CartItem {
      * @return Total price (unit price × quantity)
      */
     public BigDecimal getTotalPrice() {
+        if (unitPrice == null) {
+            throw new org.utku.shoppingapi.exception.ValidationException("Unit price cannot be null");
+        }
+        if (quantity == null) {
+            throw new org.utku.shoppingapi.exception.ValidationException("Quantity cannot be null");
+        }
         return unitPrice.multiply(new BigDecimal(quantity));
     }
 

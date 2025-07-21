@@ -66,6 +66,15 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User createUser(User user) {
+        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
+            throw new org.utku.shoppingapi.exception.ValidationException("Username cannot be empty");
+        }
+        if (user.getEmail() == null || !user.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            throw new org.utku.shoppingapi.exception.ValidationException("Invalid email format");
+        }
+        if (user.getPassword() == null || user.getPassword().length() < 6) {
+            throw new org.utku.shoppingapi.exception.ValidationException("Password must be at least 6 characters");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }

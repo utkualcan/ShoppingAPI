@@ -1,5 +1,10 @@
 package org.utku.shoppingapi.integration;
 
+/**
+ * Integration tests for authenticated user endpoints.
+ * Validates user info retrieval, logout, and token blacklist scenarios.
+ */
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +27,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class AuthUserEndpointsIntegrationTest {
 
+    /**
+     * Injects the MockMvc for simulating HTTP requests.
+     */
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Injects the ObjectMapper for JSON serialization/deserialization.
+     */
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Tests that getUserInfo returns user info with a valid token.
+     */
     @Test
     void getUserInfo_WithValidToken_ShouldReturnUserInfo() throws Exception {
         // Register a user first
@@ -73,12 +87,18 @@ class AuthUserEndpointsIntegrationTest {
                 .andExpect(jsonPath("$.enabled").value(true));
     }
 
+    /**
+     * Tests that getUserInfo without token returns unauthorized.
+     */
     @Test
     void getUserInfo_WithoutToken_ShouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get("/api/auth/me"))
                 .andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Tests that logout with valid token returns success response.
+     */
     @Test
     void logout_WithValidToken_ShouldReturnSuccess() throws Exception {
         // Register a user first
@@ -115,12 +135,18 @@ class AuthUserEndpointsIntegrationTest {
                 .andExpect(jsonPath("$.status").value("success"));
     }
 
+    /**
+     * Tests that logout without token returns unauthorized.
+     */
     @Test
     void logout_WithoutToken_ShouldReturnUnauthorized() throws Exception {
         mockMvc.perform(post("/api/auth/logout"))
                 .andExpect(status().isUnauthorized());
     }
 
+    /**
+     * Tests that accessing protected endpoint with blacklisted token returns unauthorized.
+     */
     @Test
     void accessProtectedEndpoint_WithBlacklistedToken_ShouldReturnUnauthorized() throws Exception {
         // Register a user first
