@@ -25,34 +25,44 @@ public class ProductDto {
      * Unique identifier of the product.
      */
     private Long id;
-    
+
     /**
      * Name of the product.
      */
     private String name;
-    
+
     /**
-     * Detailed description of the product.
+     * Description of the product.
      */
     private String description;
-    
+
     /**
      * Price of the product.
      */
     private BigDecimal price;
-    
+
     /**
-     * Available stock quantity.
+     * Available stock quantity for the product.
      */
     private Integer stockQuantity;
-    
+
     /**
-     * Category classification of the product.
+     * Category classification for the product.
      */
     private String category;
-    
+
     /**
-     * Whether the product is active and available for purchase.
+     * Indicates whether the product is active (available for sale).
      */
-    private Boolean active;
+    private boolean active;
+
+    /**
+     * Timestamp when the product was created.
+     */
+    private java.time.LocalDateTime createdAt;
+
+    /**
+     * Timestamp when the product was last updated.
+     */
+    private java.time.LocalDateTime updatedAt;
 }

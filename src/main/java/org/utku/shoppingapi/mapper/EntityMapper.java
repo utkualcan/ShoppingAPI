@@ -24,6 +24,11 @@ import java.util.stream.Collectors;
 @Component
 public class EntityMapper {
 
+    /**
+     * Converts User entity to UserDto for API responses.
+     * @param user The User entity
+     * @return UserDto with user information
+     */
     public UserDto toDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
@@ -40,6 +45,11 @@ public class EntityMapper {
                 .build();
     }
 
+    /**
+     * Converts Product entity to ProductDto for API responses.
+     * @param product The Product entity
+     * @return ProductDto with product information
+     */
     public ProductDto toDto(Product product) {
         return ProductDto.builder()
                 .id(product.getId())
@@ -52,6 +62,11 @@ public class EntityMapper {
                 .build();
     }
 
+    /**
+     * Converts Cart entity to CartDto for API responses.
+     * @param cart The Cart entity
+     * @return CartDto with cart information
+     */
     public CartDto toDto(Cart cart) {
         return CartDto.builder()
                 .id(cart.getId())
@@ -66,6 +81,11 @@ public class EntityMapper {
                 .build();
     }
 
+    /**
+     * Converts CartItem entity to CartItemDto for API responses.
+     * @param item The CartItem entity
+     * @return CartItemDto with cart item information
+     */
     public CartItemDto toDto(CartItem item) {
         return CartItemDto.builder()
                 .id(item.getId())
@@ -76,6 +96,11 @@ public class EntityMapper {
                 .build();
     }
 
+    /**
+     * Converts Order entity to OrderDto for API responses.
+     * @param order The Order entity
+     * @return OrderDto with order information
+     */
     public OrderDto toDto(Order order) {
         return OrderDto.builder()
                 .id(order.getId())
@@ -90,6 +115,11 @@ public class EntityMapper {
                 .build();
     }
 
+    /**
+     * Converts OrderItem entity to OrderItemDto for API responses.
+     * @param item The OrderItem entity
+     * @return OrderItemDto with order item information
+     */
     public OrderItemDto toDto(OrderItem item) {
         return OrderItemDto.builder()
                 .id(item.getId())
@@ -100,6 +130,11 @@ public class EntityMapper {
                 .build();
     }
 
+    /**
+     * Converts Favorite entity to FavoriteDto for API responses.
+     * @param favorite The Favorite entity
+     * @return FavoriteDto with favorite information
+     */
     public FavoriteDto toDto(Favorite favorite) {
         return FavoriteDto.builder()
                 .id(favorite.getId())
@@ -113,7 +148,6 @@ public class EntityMapper {
     
     /**
      * Converts Order entity to simplified DTO with reduced ID complexity.
-     * 
      * @param order The order entity
      * @return SimpleOrderDto with essential information only
      */
@@ -134,7 +168,6 @@ public class EntityMapper {
     
     /**
      * Converts OrderItem entity to simplified DTO.
-     * 
      * @param item The order item entity
      * @return SimpleOrderItemDto with essential product information
      */
@@ -150,7 +183,6 @@ public class EntityMapper {
     
     /**
      * Converts Cart entity to simplified DTO with reduced ID complexity.
-     * 
      * @param cart The cart entity
      * @return SimpleCartDto with essential information only
      */
@@ -171,7 +203,6 @@ public class EntityMapper {
     
     /**
      * Converts CartItem entity to simplified DTO.
-     * 
      * @param item The cart item entity
      * @return SimpleCartItemDto with essential product information
      */
@@ -190,10 +221,8 @@ public class EntityMapper {
     }
 
     // Request to Entity mappings
-    
     /**
-     * Converts CreateUserRequest to User entity.
-     * 
+     * Converts CreateUserRequest to User entity for persistence.
      * @param request The user creation request
      * @return User entity with populated fields
      */
@@ -209,9 +238,8 @@ public class EntityMapper {
     }
 
     /**
-     * Updates User entity from UpdateUserRequest.
-     * Only updates non-null fields to support partial updates.
-     * 
+     * Updates User entity from UpdateUserRequest for partial updates.
+     * Only updates non-null fields.
      * @param user The existing user entity
      * @param request The update request
      */
@@ -226,8 +254,7 @@ public class EntityMapper {
     }
 
     /**
-     * Converts CreateProductRequest to Product entity.
-     * 
+     * Converts CreateProductRequest to Product entity for persistence.
      * @param request The product creation request
      * @return Product entity with populated fields
      */
@@ -243,8 +270,7 @@ public class EntityMapper {
     }
 
     /**
-     * Converts CreateCartRequest to Cart entity.
-     * 
+     * Converts CreateCartRequest to Cart entity for persistence.
      * @param request The cart creation request
      * @return Cart entity with populated fields
      */
@@ -260,9 +286,8 @@ public class EntityMapper {
     }
 
     /**
-     * Updates Cart entity from UpdateCartRequest.
-     * Only updates non-null fields to support partial updates.
-     * 
+     * Updates Cart entity from UpdateCartRequest for partial updates.
+     * Only updates non-null fields.
      * @param cart The existing cart entity
      * @param request The update request
      */
@@ -278,9 +303,8 @@ public class EntityMapper {
     }
 
     /**
-     * Updates Product entity from UpdateProductRequest.
-     * Only updates non-null fields to support partial updates.
-     * 
+     * Updates Product entity from UpdateProductRequest for partial updates.
+     * Only updates non-null fields.
      * @param product The existing product entity
      * @param request The update request
      */

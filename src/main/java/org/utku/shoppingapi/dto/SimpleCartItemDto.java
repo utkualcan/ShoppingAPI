@@ -29,27 +29,22 @@ public class SimpleCartItemDto {
      * Product name.
      */
     private String productName;
-    
     /**
      * Product category.
      */
     private String category;
-    
     /**
      * Current price per unit.
      */
     private BigDecimal unitPrice;
-    
     /**
      * Quantity in cart.
      */
     private Integer quantity;
-    
     /**
      * Total price for this item (unitPrice * quantity).
      */
     private BigDecimal totalPrice;
-    
     /**
      * Stock availability status.
      */

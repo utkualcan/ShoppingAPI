@@ -27,44 +27,49 @@ public class UserDto {
      * Unique identifier of the user.
      */
     private Long id;
-    
+
     /**
      * Unique username for the account.
      */
     private String username;
-    
+
     /**
      * Email address of the user.
      */
     private String email;
-    
+
     /**
      * First name of the user.
      */
     private String firstName;
-    
+
     /**
      * Last name of the user.
      */
     private String lastName;
-    
+
     /**
      * Phone number of the user.
      */
     private String phoneNumber;
-    
+
     /**
-     * Whether the user account is enabled.
+     * Indicates whether the user account is enabled.
      */
-    private Boolean enabled;
-    
+    private boolean enabled;
+
+    /**
+     * Set of roles assigned to the user (e.g., USER, ADMIN).
+     */
+    private Set<String> roles;
+
     /**
      * Timestamp when the user account was created.
      */
     private LocalDateTime createdAt;
-    
+
     /**
-     * Set of roles assigned to the user.
+     * Timestamp when the user account was last updated.
      */
-    private Set<String> roles;
+    private LocalDateTime updatedAt;
 }

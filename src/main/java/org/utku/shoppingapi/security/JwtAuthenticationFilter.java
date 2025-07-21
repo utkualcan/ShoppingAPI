@@ -30,6 +30,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.tokenBlacklistService = tokenBlacklistService;
     }
 
+    /**
+     * Processes incoming HTTP requests to validate JWT tokens and set authentication context.
+     *
+     * @param request HTTP request
+     * @param response HTTP response
+     * @param filterChain Filter chain for further processing
+     * @throws ServletException if a servlet error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -53,10 +62,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Extract JWT token from Authorization header.
-     * 
+     * Extracts JWT token from the Authorization header of the HTTP request.
+     *
      * @param request HTTP request
-     * @return JWT token string or null
+     * @return JWT token string or null if not present
      */
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");

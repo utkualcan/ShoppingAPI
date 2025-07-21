@@ -16,12 +16,29 @@ import java.util.stream.Collectors;
  * Represents the user principal used in authentication and authorization.
  */
 public class UserPrincipal implements UserDetails {
-    
+    /**
+     * User ID of the authenticated principal.
+     */
     private Long id;
+    /**
+     * Username of the authenticated principal.
+     */
     private String username;
+    /**
+     * Email address of the authenticated principal.
+     */
     private String email;
+    /**
+     * Password hash of the authenticated principal.
+     */
     private String password;
+    /**
+     * Indicates whether the user account is enabled.
+     */
     private Boolean enabled;
+    /**
+     * Authorities granted to the user (roles and permissions).
+     */
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserPrincipal(Long id, String username, String email, String password, Boolean enabled, Collection<? extends GrantedAuthority> authorities) {
@@ -35,7 +52,7 @@ public class UserPrincipal implements UserDetails {
 
     /**
      * Create UserPrincipal from User entity.
-     * 
+     *
      * @param user User entity
      * @return UserPrincipal instance
      */
@@ -54,45 +71,72 @@ public class UserPrincipal implements UserDetails {
         );
     }
 
-    // Getters
+    /**
+     * Returns the user ID.
+     * @return user ID
+     */
     public Long getId() {
         return id;
     }
-
+    /**
+     * Returns the email address.
+     * @return email address
+     */
     public String getEmail() {
         return email;
     }
-
+    /**
+     * Returns the username.
+     * @return username
+     */
     @Override
     public String getUsername() {
         return username;
     }
-
+    /**
+     * Returns the password hash.
+     * @return password hash
+     */
     @Override
     public String getPassword() {
         return password;
     }
-
+    /**
+     * Returns the authorities granted to the user.
+     * @return authorities
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
-
+    /**
+     * Indicates whether the account is non-expired.
+     * @return always true
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-
+    /**
+     * Indicates whether the account is non-locked.
+     * @return always true
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-
+    /**
+     * Indicates whether the credentials are non-expired.
+     * @return always true
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
+    /**
+     * Indicates whether the user account is enabled.
+     * @return enabled status
+     */
     @Override
     public boolean isEnabled() {
         return enabled;

@@ -21,27 +21,26 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartDto {
-    
     /**
      * Unique identifier of the cart.
      */
     private Long id;
-    
+
     /**
      * ID of the user who owns this cart.
      */
     private Long userId;
-    
+
     /**
      * List of items in the cart.
      */
     private List<CartItemDto> items;
-    
+
     /**
      * Total price of all items in the cart.
      */
-    private BigDecimal totalPrice;
-    
+    private java.math.BigDecimal totalPrice;
+
     /**
      * Total number of items in the cart.
      */

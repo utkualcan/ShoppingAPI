@@ -36,12 +36,12 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver(); // Handles pagination arguments
         // Set default pagination using constants
         resolver.setFallbackPageable(PageRequest.of(0, AppConstants.DEFAULT_PAGE_SIZE, 
-            Sort.by(AppConstants.DEFAULT_SORT_FIELD).ascending()));
+            Sort.by(AppConstants.DEFAULT_SORT_FIELD).ascending())); // Default: first page, default size, sort by id ascending
         // Prevent clients from requesting too many items at once
-        resolver.setMaxPageSize(AppConstants.MAX_PAGE_SIZE);
-        resolvers.add(resolver);
+        resolver.setMaxPageSize(AppConstants.MAX_PAGE_SIZE); // Limit max page size for performance
+        resolvers.add(resolver); // Add resolver to argument resolvers
     }
 }

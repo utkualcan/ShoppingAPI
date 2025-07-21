@@ -25,24 +25,24 @@ public class OrderItemDto {
      * Unique identifier of the order item.
      */
     private Long id;
-    
+
     /**
-     * Complete product information.
+     * Complete product information for this order item.
      */
     private ProductDto product;
-    
+
     /**
      * Quantity of the product ordered.
      */
     private Integer quantity;
-    
+
     /**
      * Unit price of the product at the time of order.
      */
-    private BigDecimal unitPrice;
-    
+    private java.math.BigDecimal unitPrice;
+
     /**
      * Total price for this order item (unit price × quantity).
      */
-    private BigDecimal totalPrice;
+    private java.math.BigDecimal totalPrice;
 }

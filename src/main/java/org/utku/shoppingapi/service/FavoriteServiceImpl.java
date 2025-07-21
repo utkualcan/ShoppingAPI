@@ -18,13 +18,28 @@ import org.utku.shoppingapi.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of FavoriteService.
+ * Handles all business logic and security for managing user favorites.
+ */
 @Service
 @Transactional
 public class FavoriteServiceImpl implements FavoriteService {
-
+    /**
+     * Repository for favorite data access.
+     */
     private final FavoriteRepository favoriteRepository;
+    /**
+     * Repository for user data access.
+     */
     private final UserRepository userRepository;
+    /**
+     * Repository for product data access.
+     */
     private final ProductRepository productRepository;
+    /**
+     * Mapper for converting entities to DTOs.
+     */
     private final EntityMapper mapper;
 
     public FavoriteServiceImpl(FavoriteRepository favoriteRepository, UserRepository userRepository, ProductRepository productRepository, EntityMapper mapper) {
@@ -34,6 +49,12 @@ public class FavoriteServiceImpl implements FavoriteService {
         this.mapper = mapper;
     }
 
+    /**
+     * Adds a product to a user's favorites list. Access is restricted to the user or ADMIN.
+     * @param userId User ID
+     * @param productId Product ID
+     * @return Newly created FavoriteDto
+     */
     @Override
     @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
     public FavoriteDto addFavorite(Long userId, Long productId) {
@@ -50,6 +71,12 @@ public class FavoriteServiceImpl implements FavoriteService {
         return mapper.toDto(favoriteRepository.save(favorite));
     }
 
+    /**
+     * Removes a product from a user's favorites list. Access is restricted to the user or ADMIN.
+     * @param userId User ID
+     * @param productId Product ID
+     * @return Success response message
+     */
     @Override
     @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
     public ApiResponse<String> removeFavorite(Long userId, Long productId) {
@@ -61,6 +88,11 @@ public class FavoriteServiceImpl implements FavoriteService {
         return ApiResponse.success("Product removed from favorites successfully", null);
     }
 
+    /**
+     * Retrieves all favorites for a specific user. Access is restricted to the user or ADMIN.
+     * @param userId User ID
+     * @return List of FavoriteDto objects
+     */
     @Override
     @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
     public List<FavoriteDto> getFavoritesByUserId(Long userId) {
@@ -69,6 +101,12 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Checks if a product is in a user's favorites. Access is restricted to the user or ADMIN.
+     * @param userId User ID
+     * @param productId Product ID
+     * @return true if product is favorited, false otherwise
+     */
     @Override
     @PreAuthorize("hasRole('ADMIN') or #userId == authentication.principal.id")
     public boolean isFavorite(Long userId, Long productId) {
@@ -77,11 +115,22 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     // --- Helper Methods ---
+    /**
+     * Finds a user entity by its ID.
+     * @param userId User ID
+     * @return User entity
+     * @throws ResourceNotFoundException if user not found
+     */
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.USER_NOT_FOUND + userId));
     }
-
+    /**
+     * Finds a product entity by its ID.
+     * @param productId Product ID
+     * @return Product entity
+     * @throws ResourceNotFoundException if product not found
+     */
     private Product findProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.PRODUCT_NOT_FOUND + productId));

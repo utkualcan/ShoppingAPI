@@ -33,28 +33,44 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
-    private final CustomAccessDeniedHandler accessDeniedHandler; // Yeni eklendi
+    /**
+     * Handler for access denied (HTTP 403) errors.
+     */
+    private final CustomAccessDeniedHandler accessDeniedHandler;
     private final JwtUtil jwtUtil;
     private final TokenBlacklistService tokenBlacklistService;
 
-    // Constructor güncellendi
+    /**
+     * Constructor for SecurityConfig.
+     * Initializes all required security components.
+     */
     public SecurityConfig(CustomUserDetailsService customUserDetailsService,
                           JwtAuthenticationEntryPoint unauthorizedHandler,
-                          CustomAccessDeniedHandler accessDeniedHandler, // Yeni eklendi
+                          CustomAccessDeniedHandler accessDeniedHandler,
                           JwtUtil jwtUtil,
                           TokenBlacklistService tokenBlacklistService) {
         this.customUserDetailsService = customUserDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
-        this.accessDeniedHandler = accessDeniedHandler; // Yeni eklendi
+        this.accessDeniedHandler = accessDeniedHandler;
         this.jwtUtil = jwtUtil;
         this.tokenBlacklistService = tokenBlacklistService;
     }
 
+    /**
+     * Configures the JWT authentication filter bean.
+     *
+     * @return JwtAuthenticationFilter instance
+     */
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtUtil, customUserDetailsService, tokenBlacklistService);
     }
 
+    /**
+     * Configures the authentication provider bean for user details and password encoding.
+     *
+     * @return DaoAuthenticationProvider instance
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -63,16 +79,36 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    /**
+     * Configures the authentication manager bean for Spring Security.
+     *
+     * @param authConfig AuthenticationConfiguration
+     * @return AuthenticationManager instance
+     * @throws Exception if configuration fails
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    /**
+     * Configures the password encoder bean for secure password hashing.
+     *
+     * @return PasswordEncoder instance
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures the main security filter chain for HTTP requests.
+     * Sets up JWT authentication, access control, and exception handling.
+     *
+     * @param http HttpSecurity configuration
+     * @return SecurityFilterChain instance
+     * @throws Exception if configuration fails
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -80,7 +116,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(unauthorizedHandler)
-                        .accessDeniedHandler(accessDeniedHandler) // 403 hataları için handler eklendi
+                        .accessDeniedHandler(accessDeniedHandler) // Handler for access denied (HTTP 403) errors
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
@@ -113,6 +149,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configures CORS settings for cross-origin requests.
+     *
+     * @return CorsConfigurationSource instance
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

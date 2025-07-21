@@ -9,47 +9,37 @@ import java.util.Optional;
 
 /**
  * Service interface for user management operations.
- * Defines the contract for user-related business logic.
+ * Defines the contract for user-related business logic and security.
  */
 public interface UserService {
-    
     /**
-     * Retrieves all users with pagination support.
-     * 
+     * Retrieves all users in the system with pagination support.
      * @param pageable Pagination parameters
      * @return Page of users
      */
     Page<User> getAllUsers(Pageable pageable);
-    
     /**
      * Finds a user by their unique identifier.
-     * 
-     * @param id The user ID
+     * @param id User ID
      * @return Optional containing the user if found
      */
     Optional<User> findUserById(Long id);
-    
     /**
      * Creates a new user account.
-     * 
-     * @param user The user entity to create
-     * @return The created user entity
+     * @param user User entity to create
+     * @return Created user entity
      */
     User createUser(User user);
-    
     /**
-     * Updates an existing user's information using request data.
-     * 
-     * @param id The ID of the user to update
-     * @param request Update request containing new data
-     * @return The updated user entity
+     * Updates an existing user's information.
+     * @param id User ID
+     * @param request Update request containing new information
+     * @return Updated user entity
      */
     User updateUser(Long id, UpdateUserRequest request);
-    
     /**
-     * Deletes a user account by ID.
-     * 
-     * @param id The ID of the user to delete
+     * Deletes a user account. Admin users cannot be deleted.
+     * @param id User ID
      */
     void deleteUser(Long id);
 }

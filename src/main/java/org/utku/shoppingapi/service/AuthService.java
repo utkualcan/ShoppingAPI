@@ -93,6 +93,7 @@ public class AuthService {
      * @return JwtResponse with token and user details
      */
     public JwtResponse authenticateUser(LoginRequest loginRequest) {
+        // Authenticate user credentials and generate JWT
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -115,6 +116,7 @@ public class AuthService {
      * @throws ResourceNotFoundException if user not found
      */
     public User getCurrentUser() {
+        // Retrieve current authenticated user from security context
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResourceNotFoundException("User not authenticated");
@@ -131,6 +133,7 @@ public class AuthService {
      * @return UserInfoResponse with current user details
      */
     public UserInfoResponse getCurrentUserInfo() {
+        // Map current user entity to UserInfoResponse DTO
         User user = getCurrentUser();
         Set<String> roles = user.getRoles().stream()
                 .map(role -> role.name())

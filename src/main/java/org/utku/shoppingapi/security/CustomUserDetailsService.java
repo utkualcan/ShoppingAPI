@@ -19,6 +19,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Loads user details from the database by username for authentication.
+     *
+     * @param username Username to search for
+     * @return UserDetails for authentication
+     * @throws UsernameNotFoundException if user not found
+     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -29,10 +36,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     /**
-     * Load user details by user ID.
-     * 
+     * Loads user details from the database by user ID for authentication.
+     *
      * @param id User ID
-     * @return UserDetails
+     * @return UserDetails for authentication
      * @throws UsernameNotFoundException if user not found
      */
     @Transactional

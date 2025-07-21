@@ -20,10 +20,19 @@ import java.util.Map;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    /**
+     * Handles unauthorized access attempts and returns a JSON error response.
+     *
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param authException the authentication exception thrown by Spring Security
+     * @throws IOException if writing to the response fails
+     * @throws ServletException if a servlet error occurs
+     */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-        
+
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 

@@ -32,6 +32,12 @@ public class UserController {
         this.mapper = mapper;
     }
 
+    /**
+     * Retrieves all users in the system with pagination. Only accessible by ADMIN users.
+     *
+     * @param pageable Pagination and sorting parameters
+     * @return Page of UserDto objects representing all users
+     */
     @GetMapping
     @Operation(summary = "1. List all users", description = "Retrieve paginated list of all users")
     @PreAuthorize("hasRole('ADMIN')")
@@ -43,6 +49,12 @@ public class UserController {
         return userService.getAllUsers(pageable).map(mapper::toDto);
     }
 
+    /**
+     * Retrieves a specific user by their unique identifier. Only accessible by ADMIN users.
+     *
+     * @param id Unique identifier of the user
+     * @return UserDto object representing the user
+     */
     @GetMapping("/{id}")
     @Operation(summary = "3. Get user by ID", description = "Retrieve a specific user by their unique identifier")
     @PreAuthorize("hasRole('ADMIN')")
@@ -53,6 +65,12 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Creates a new user account. Only accessible by ADMIN users.
+     *
+     * @param request CreateUserRequest containing user information
+     * @return UserDto object representing the created user
+     */
     @PostMapping
     @Operation(summary = "2. Create new user", description = "Create a new user account with the provided information")
     @PreAuthorize("hasRole('ADMIN')")
@@ -61,6 +79,13 @@ public class UserController {
         return mapper.toDto(userService.createUser(user));
     }
 
+    /**
+     * Updates an existing user's information. Only accessible by ADMIN users.
+     *
+     * @param id Unique identifier of the user
+     * @param request UpdateUserRequest containing updated information
+     * @return UserDto object representing the updated user
+     */
     @PutMapping("/{id}")
     @Operation(summary = "4. Update user", description = "Update an existing user's information")
     @PreAuthorize("hasRole('ADMIN')")
@@ -69,6 +94,13 @@ public class UserController {
         return ResponseEntity.ok(mapper.toDto(updatedUser));
     }
 
+    /**
+     * Permanently deletes a user account. Admin users cannot be deleted.
+     * Throws exception if user is ADMIN. Only accessible by ADMIN users.
+     *
+     * @param id Unique identifier of the user
+     * @return Void response
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "5. Delete user", description = "Permanently delete a user account")
     @PreAuthorize("hasRole('ADMIN')")

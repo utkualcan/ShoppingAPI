@@ -36,7 +36,7 @@ public class JwtUtil {
 
     /**
      * Generate JWT token from user authentication.
-     * 
+     *
      * @param authentication Spring Security authentication object
      * @return JWT token string
      */
@@ -59,7 +59,7 @@ public class JwtUtil {
 
     /**
      * Generate JWT token from username and roles.
-     * 
+     *
      * @param username User's username
      * @param userId User's ID
      * @param roles User's roles
@@ -78,7 +78,7 @@ public class JwtUtil {
 
     /**
      * Extract username from JWT token.
-     * 
+     *
      * @param token JWT token
      * @return Username
      */
@@ -93,7 +93,7 @@ public class JwtUtil {
 
     /**
      * Extract user ID from JWT token.
-     * 
+     *
      * @param token JWT token
      * @return User ID
      */
@@ -109,7 +109,7 @@ public class JwtUtil {
 
     /**
      * Extract roles from JWT token.
-     * 
+     *
      * @param token JWT token
      * @return List of roles
      */
@@ -126,7 +126,7 @@ public class JwtUtil {
 
     /**
      * Validate JWT token.
-     * 
+     *
      * @param authToken JWT token to validate
      * @return true if valid, false otherwise
      */
@@ -151,7 +151,7 @@ public class JwtUtil {
 
     /**
      * Get signing key for JWT operations.
-     * 
+     *
      * @return Signing key
      */
     private Key getSigningKey() {
