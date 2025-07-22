@@ -37,7 +37,7 @@ public @interface UniqueUsername {
      */
     Class<?>[] groups() default {};
     /**
-     * Allows specification of custom payload objects.
+     * Allows specification of custom payload objects..
      */
     Class<? extends Payload>[] payload() default {};
 }
