@@ -212,6 +212,7 @@ public class User {
      * @see AppConstants#MAX_PHONE_LENGTH
      */
     @Column(length = AppConstants.MAX_PHONE_LENGTH)
+    @jakarta.validation.constraints.Pattern(regexp = "^[0-9+\\-\\s()]*$", message = "Please enter a valid phone number")
     private String phoneNumber;
 
     /**

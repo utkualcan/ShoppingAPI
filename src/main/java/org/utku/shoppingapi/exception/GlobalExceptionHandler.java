@@ -121,6 +121,10 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
+            // Custom message for phone number validation error
+            if (fieldName.equals("phoneNumber")) {
+                errorMessage = "Invalid phone number. Only digits, +, -, spaces, and parentheses are allowed.";
+            }
             errors.put(fieldName, errorMessage);
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
@@ -191,5 +195,27 @@ public class GlobalExceptionHandler {
         // log.error("An unexpected error occurred: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("An unexpected error occurred");
+    }
+
+    /**
+     * Handles validation errors from entity constraints (e.g. phone number pattern).
+     * Returns a field-specific error message with HTTP 400 status.
+     *
+     * @param ex ConstraintViolationException thrown by validation
+     * @return ResponseEntity with error details and 400 status
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, String>> handleConstraintViolationException(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations().forEach(violation -> {
+            String field = violation.getPropertyPath().toString();
+            String message = violation.getMessage();
+            // Custom message for phone number validation error
+            if (field.contains("phoneNumber")) {
+                message = "Invalid phone number. Only digits, +, -, spaces, and parentheses are allowed.";
+            }
+            errors.put(field, message);
+        });
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 }
