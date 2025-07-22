@@ -5,6 +5,8 @@ services:
     image: postgres:latest
     container_name: shoppingdb
     restart: always
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -13,6 +15,25 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: shoppingapi
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DATASOURCE_URL: ${DATASOURCE_URL}
+      DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+    ports:
+      - "8080:8080"
+    networks:
+      - default
 
 volumes:
   pgdata:
