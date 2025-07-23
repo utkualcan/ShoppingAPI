@@ -36,10 +36,6 @@ public class OpenApiConfig {
                         .contact(new Contact()
                                 .name("API Support") // Contact name
                                 .email("support@shoppingapi.com"))) // Contact email
-                .servers(List.of(
-                        new Server()
-                                .url("http://localhost:8080") // Local development server URL
-                                .description("Development Server"))) // Server description
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName)) // Add JWT security requirement
                 .components(
                         new Components()
