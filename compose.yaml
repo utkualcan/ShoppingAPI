@@ -19,6 +19,7 @@ services:
   app:
     image: alcanutku/shoppingapi-app:latest
     container_name: shoppingapi
+    entrypoint: ["java", "--add-opens=java.base/java.io=ALL-UNNAMED", "-jar", "app.jar"]
     restart: always
     depends_on:
       - db

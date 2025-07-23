@@ -1,6 +1,5 @@
 package org.utku.shoppingapi;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -30,17 +29,10 @@ public class ShoppingApiApplication {
 
     /**
      * Main method that starts the Spring Boot application.
-     * Loads environment variables from .env file and sets them as system properties.
      *
      * @param args Command line arguments passed to the application
      */
     public static void main(String[] args) {
-        // Load .env file
-        Dotenv dotenv = Dotenv.load();
-
-        // Add environment variables to system properties
-        dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
-
         SpringApplication.run(ShoppingApiApplication.class, args);
     }
 
