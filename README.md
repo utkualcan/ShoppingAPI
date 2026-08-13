@@ -66,6 +66,11 @@ Content-Type: application/json
 }
 ```
 
+## Security & Tests
+
+- **JWT authentication**: stateless auth with `JwtAuthenticationFilter` + `JwtAuthenticationEntryPoint`; protected and public endpoints are covered in [AUTHENTICATION_DEMO.md](AUTHENTICATION_DEMO.md).
+- **11-class test suite**: unit tests (services, repository), controller tests, and full integration tests (auth flows, user/product endpoints, public-endpoint security) under `src/test`.
+
 ## Contributing
 
 Contributions are welcome!
